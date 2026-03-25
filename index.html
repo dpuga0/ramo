@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#e6d7f7">
+  <meta name="description" content="Una pagina nueva con un ramo de flores pastel inspirado en tu foto.">
+  <title>Un ramo para ti</title>
+  <style>
+    :root {
+      --ink: #473846;
+      --muted: #796575;
+      --line: rgba(118, 92, 124, 0.16);
+      --shadow: 0 28px 80px rgba(107, 75, 105, 0.18);
+      --shadow-soft: 0 16px 40px rgba(107, 75, 105, 0.12);
+      --radius-xl: 34px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Avenir Next", "Trebuchet MS", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.92), transparent 24%),
+        radial-gradient(circle at 82% 14%, rgba(196, 226, 255, 0.72), transparent 20%),
+        radial-gradient(circle at 84% 28%, rgba(255, 185, 215, 0.42), transparent 14%),
+        linear-gradient(180deg, #f5f9ff 0%, #fff0f6 42%, #fff8fb 100%);
+      overflow-x: hidden;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(22px);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.72;
+    }
+
+    body::before {
+      top: -90px;
+      left: -70px;
+      width: 240px;
+      height: 240px;
+      background: rgba(190, 224, 255, 0.92);
+      animation: drift 12s ease-in-out infinite;
+    }
+
+    body::after {
+      right: -70px;
+      bottom: 8%;
+      width: 250px;
+      height: 250px;
+      background: rgba(255, 204, 225, 0.92);
+      animation: drift 14s ease-in-out infinite reverse;
+    }
+
+    .sparkles,
+    .sparkles::before,
+    .sparkles::after {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      content: "";
+      background-repeat: no-repeat;
+    }
+
+    .sparkles {
+      background-image:
+        radial-gradient(circle at 14% 28%, rgba(255, 255, 255, 0.95) 0 2px, transparent 3px),
+        radial-gradient(circle at 76% 18%, rgba(255, 255, 255, 0.8) 0 2px, transparent 3px),
+        radial-gradient(circle at 22% 72%, rgba(255, 255, 255, 0.72) 0 2px, transparent 3px),
+        radial-gradient(circle at 84% 82%, rgba(255, 255, 255, 0.7) 0 2px, transparent 3px);
+      opacity: 0.68;
+    }
+
+    .sparkles::before {
+      background-image:
+        radial-gradient(circle at 34% 16%, rgba(255, 255, 255, 0.8) 0 2px, transparent 3px),
+        radial-gradient(circle at 64% 66%, rgba(255, 255, 255, 0.72) 0 2px, transparent 3px);
+      animation: twinkle 8s ease-in-out infinite;
+    }
+
+    .sparkles::after {
+      background-image:
+        radial-gradient(circle at 50% 40%, rgba(255, 255, 255, 0.68) 0 2px, transparent 3px),
+        radial-gradient(circle at 10% 88%, rgba(255, 255, 255, 0.75) 0 2px, transparent 3px);
+      animation: twinkle 11s ease-in-out infinite reverse;
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      width: min(100%, 520px);
+      margin: 0 auto;
+      padding: max(24px, env(safe-area-inset-top)) 18px max(32px, env(safe-area-inset-bottom));
+    }
+
+    .hero,
+    .note {
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      border-radius: var(--radius-xl);
+      background:
+        linear-gradient(145deg, rgba(255, 255, 255, 0.72), rgba(255, 245, 250, 0.88)),
+        rgba(255, 255, 255, 0.38);
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(14px);
+    }
+
+    .hero {
+      padding: 28px 24px 24px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.76);
+      box-shadow: inset 0 0 0 1px rgba(217, 124, 162, 0.12);
+      color: #b7658d;
+      font-size: 0.83rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2 {
+      margin: 0;
+      font-family: "Baskerville", "Palatino Linotype", "Book Antiqua", serif;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+    }
+
+    h1 {
+      margin-top: 16px;
+      font-size: clamp(2.9rem, 10vw, 4.4rem);
+      line-height: 0.92;
+      max-width: 7ch;
+    }
+
+    .lead {
+      margin: 18px 0 0;
+      max-width: 32ch;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    .showcase {
+      position: relative;
+      margin-top: 20px;
+      padding: 16px;
+      border-radius: 38px;
+      background:
+        linear-gradient(160deg, rgba(255, 255, 255, 0.52), rgba(242, 248, 255, 0.24)),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.34), rgba(255, 240, 246, 0.32));
+      border: 1px solid rgba(255, 255, 255, 0.56);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .showcase::before {
+      content: "";
+      position: absolute;
+      inset: 14px;
+      border-radius: 28px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.02)),
+        radial-gradient(circle at top, rgba(255, 255, 255, 0.34), transparent 46%);
+      pointer-events: none;
+    }
+
+    .scene {
+      position: relative;
+      border-radius: 30px;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.32), rgba(245, 250, 255, 0.1)),
+        radial-gradient(circle at 52% 12%, rgba(255, 255, 255, 0.46), transparent 32%),
+        linear-gradient(180deg, rgba(222, 236, 255, 0.5) 0%, rgba(255, 240, 246, 0.3) 64%, rgba(255, 255, 255, 0.24) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.74);
+    }
+
+    .scene svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .note {
+      margin-top: 20px;
+      padding: 24px 22px 22px;
+    }
+
+    .note h2 {
+      font-size: 2rem;
+      line-height: 1;
+    }
+
+    .note p {
+      margin: 12px 0 0;
+      color: var(--muted);
+      line-height: 1.68;
+    }
+
+    .palette {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .palette span {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid var(--line);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+      color: #6a5565;
+      font-size: 0.93rem;
+    }
+
+    .signature {
+      margin-top: 16px;
+      color: #a38293;
+      font-size: 0.9rem;
+      letter-spacing: 0.03em;
+    }
+
+    .bouquet-main {
+      animation: breathe 6.4s ease-in-out infinite;
+      transform-origin: 210px 320px;
+    }
+
+    .stock-left {
+      animation: sway-left 7s ease-in-out infinite;
+      transform-origin: 120px 470px;
+    }
+
+    .stock-right {
+      animation: sway-right 8s ease-in-out infinite;
+      transform-origin: 308px 470px;
+    }
+
+    .ribbon-group {
+      animation: ribbon-wave 8s ease-in-out infinite;
+      transform-origin: 210px 472px;
+    }
+
+    @keyframes drift {
+      0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+      50% { transform: translate3d(0, 18px, 0) scale(1.05); }
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.38; transform: scale(1); }
+      50% { opacity: 0.72; transform: scale(1.04); }
+    }
+
+    @keyframes breathe {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-6px) scale(1.015); }
+    }
+
+    @keyframes sway-left {
+      0%, 100% { transform: rotate(-1deg); }
+      50% { transform: rotate(2deg); }
+    }
+
+    @keyframes sway-right {
+      0%, 100% { transform: rotate(1deg); }
+      50% { transform: rotate(-2deg); }
+    }
+
+    @keyframes ribbon-wave {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(2deg); }
+    }
+
+    @media (max-width: 420px) {
+      .hero,
+      .note,
+      .showcase {
+        border-radius: 26px;
+      }
+
+      h1 {
+        font-size: clamp(2.6rem, 12vw, 3.6rem);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="sparkles" aria-hidden="true"></div>
+
+  <main class="page">
+    <section class="hero">
+      <div class="eyebrow">Pagina nueva</div>
+      <h1>Un ramo para ti</h1>
+      <p class="lead">
+        Hice esta version inspirada en la foto que me compartiste:
+        hortensia azul, flores rosa pastel, toques lila y una envoltura blanca
+        con liston rosa para que se sienta delicada y especial.
+      </p>
+    </section>
+
+    <section class="showcase" aria-label="Ilustracion del ramo">
+      <div class="scene">
+        <svg viewBox="0 0 420 560" role="img" aria-label="Ramo de flores pastel con hortensia azul, rosas rosas y liston rosa">
+          <defs>
+            <linearGradient id="paperLeft" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.96"></stop>
+              <stop offset="100%" stop-color="#edf8f4" stop-opacity="0.82"></stop>
+            </linearGradient>
+            <linearGradient id="paperRight" x1="100%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.96"></stop>
+              <stop offset="100%" stop-color="#f8eef9" stop-opacity="0.82"></stop>
+            </linearGradient>
+            <linearGradient id="paperFront" x1="50%" y1="0%" x2="50%" y2="100%">
+              <stop offset="0%" stop-color="#fbfff9" stop-opacity="0.94"></stop>
+              <stop offset="100%" stop-color="#fff5f9" stop-opacity="0.9"></stop>
+            </linearGradient>
+            <linearGradient id="ribbon" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#eeb3cb"></stop>
+              <stop offset="100%" stop-color="#b97695"></stop>
+            </linearGradient>
+            <radialGradient id="centerGlow" cx="50%" cy="45%" r="60%">
+              <stop offset="0%" stop-color="#dff0ff" stop-opacity="0.95"></stop>
+              <stop offset="100%" stop-color="#a9ceef" stop-opacity="0.2"></stop>
+            </radialGradient>
+            <filter id="paperShadow" x="-25%" y="-25%" width="150%" height="150%">
+              <feDropShadow dx="0" dy="16" stdDeviation="14" flood-color="#8b6f81" flood-opacity="0.16"></feDropShadow>
+            </filter>
+            <g id="floret">
+              <ellipse cx="0" cy="-7" rx="6.6" ry="9.4" fill="currentColor" opacity="0.96"></ellipse>
+              <ellipse cx="7" cy="0" rx="6.6" ry="9.4" fill="currentColor" opacity="0.94" transform="rotate(90 7 0)"></ellipse>
+              <ellipse cx="0" cy="7" rx="6.6" ry="9.4" fill="currentColor" opacity="0.94"></ellipse>
+              <ellipse cx="-7" cy="0" rx="6.6" ry="9.4" fill="currentColor" opacity="0.92" transform="rotate(90 -7 0)"></ellipse>
+              <circle cx="0" cy="0" r="2.7" fill="#ffffff" fill-opacity="0.8"></circle>
+            </g>
+            <g id="roseBloom">
+              <ellipse cx="0" cy="-15" rx="14" ry="20" fill="currentColor" opacity="0.94"></ellipse>
+              <ellipse cx="14" cy="-5" rx="14" ry="20" fill="currentColor" opacity="0.92" transform="rotate(34 14 -5)"></ellipse>
+              <ellipse cx="14" cy="10" rx="14" ry="20" fill="currentColor" opacity="0.9" transform="rotate(68 14 10)"></ellipse>
+              <ellipse cx="0" cy="17" rx="14" ry="20" fill="currentColor" opacity="0.9"></ellipse>
+              <ellipse cx="-14" cy="10" rx="14" ry="20" fill="currentColor" opacity="0.92" transform="rotate(112 -14 10)"></ellipse>
+              <ellipse cx="-14" cy="-5" rx="14" ry="20" fill="currentColor" opacity="0.92" transform="rotate(146 -14 -5)"></ellipse>
+              <ellipse cx="0" cy="0" rx="15" ry="12" fill="#fff5fb" fill-opacity="0.42"></ellipse>
+              <circle cx="0" cy="0" r="8" fill="#ffffff" fill-opacity="0.24"></circle>
+            </g>
+            <g id="ruffle">
+              <ellipse cx="-16" cy="-4" rx="15" ry="13" fill="currentColor" opacity="0.96"></ellipse>
+              <ellipse cx="-2" cy="-14" rx="16" ry="14" fill="currentColor" opacity="0.92"></ellipse>
+              <ellipse cx="14" cy="-4" rx="15" ry="13" fill="currentColor" opacity="0.94"></ellipse>
+              <ellipse cx="10" cy="12" rx="17" ry="14" fill="currentColor" opacity="0.88"></ellipse>
+              <ellipse cx="-8" cy="12" rx="15" ry="13" fill="currentColor" opacity="0.9"></ellipse>
+              <circle cx="0" cy="0" r="9" fill="#fff6ff" fill-opacity="0.26"></circle>
+            </g>
+            <g id="pomPom">
+              <circle cx="-8" cy="-6" r="9" fill="currentColor" opacity="0.98"></circle>
+              <circle cx="0" cy="-10" r="8" fill="currentColor" opacity="0.92"></circle>
+              <circle cx="8" cy="-4" r="9" fill="currentColor" opacity="0.9"></circle>
+              <circle cx="-4" cy="4" r="9" fill="currentColor" opacity="0.94"></circle>
+              <circle cx="6" cy="6" r="8" fill="currentColor" opacity="0.9"></circle>
+            </g>
+            <g id="bud">
+              <ellipse cx="0" cy="0" rx="6" ry="10" fill="#a7cf8a"></ellipse>
+              <ellipse cx="0" cy="2" rx="4" ry="7" fill="#f1c0d5"></ellipse>
+            </g>
+          </defs>
+
+          <g opacity="0.62">
+            <circle cx="94" cy="84" r="76" fill="#ffffff" fill-opacity="0.5"></circle>
+            <circle cx="308" cy="92" r="60" fill="#bfdfff" fill-opacity="0.34"></circle>
+            <circle cx="352" cy="152" r="28" fill="#ffcedf" fill-opacity="0.42"></circle>
+            <circle cx="258" cy="64" r="15" fill="#79db9a" fill-opacity="0.84"></circle>
+          </g>
+
+          <rect x="88" y="146" width="244" height="90" rx="44" fill="#2d343c" fill-opacity="0.16"></rect>
+          <rect x="106" y="166" width="210" height="64" rx="32" fill="#f8fbff" fill-opacity="0.25"></rect>
+
+          <g stroke-linecap="round" stroke="#6c8d62" stroke-opacity="0.86" fill="none">
+            <path d="M207 470 C198 395 197 340 188 252" stroke-width="4.4"></path>
+            <path d="M196 474 C174 400 160 332 136 242" stroke-width="4"></path>
+            <path d="M224 470 C248 402 274 336 292 246" stroke-width="4"></path>
+            <path d="M214 475 C216 396 238 332 242 250" stroke-width="3.8"></path>
+            <path d="M182 466 C178 398 124 306 112 216" stroke-width="3.2"></path>
+            <path d="M240 466 C250 396 312 312 320 208" stroke-width="3.2"></path>
+          </g>
+
+          <g class="stock-left">
+            <path d="M116 226 C118 276 118 334 130 430" stroke="#6d8a64" stroke-width="4" stroke-linecap="round" fill="none"></path>
+            <path d="M98 170 C104 246 108 330 122 428" stroke="#729366" stroke-width="3.6" stroke-linecap="round" fill="none"></path>
+            <use href="#bud" transform="translate(96 166) scale(1.1)"></use>
+            <use href="#bud" transform="translate(106 146) scale(1)"></use>
+            <use href="#bud" transform="translate(116 128) scale(0.9)"></use>
+            <use href="#floret" transform="translate(118 210) scale(0.92)" style="color:#f6c0d8"></use>
+            <use href="#floret" transform="translate(130 236) scale(0.8)" style="color:#f2aec8"></use>
+            <use href="#floret" transform="translate(104 254) scale(0.84)" style="color:#f7cde0"></use>
+            <use href="#floret" transform="translate(128 286) scale(0.78)" style="color:#efacc4"></use>
+            <use href="#floret" transform="translate(110 310) scale(0.76)" style="color:#f7d3e6"></use>
+          </g>
+
+          <g class="stock-right">
+            <path d="M302 214 C304 276 298 344 292 430" stroke="#6b8b62" stroke-width="4" stroke-linecap="round" fill="none"></path>
+            <path d="M324 196 C322 274 316 344 306 426" stroke="#709166" stroke-width="3.6" stroke-linecap="round" fill="none"></path>
+            <use href="#bud" transform="translate(326 194) scale(1.05)"></use>
+            <use href="#bud" transform="translate(334 176) scale(0.95)"></use>
+            <use href="#floret" transform="translate(304 236) scale(0.82)" style="color:#f3bbd5"></use>
+            <use href="#floret" transform="translate(316 264) scale(0.78)" style="color:#f7d0e4"></use>
+            <use href="#floret" transform="translate(292 294) scale(0.84)" style="color:#efabc8"></use>
+            <use href="#floret" transform="translate(308 324) scale(0.76)" style="color:#f7d9e7"></use>
+          </g>
+
+          <g filter="url(#paperShadow)">
+            <polygon points="120,294 190,206 244,378 124,442" fill="url(#paperLeft)"></polygon>
+            <polygon points="300,290 230,206 182,380 302,442" fill="url(#paperRight)"></polygon>
+            <polygon points="98,328 170,292 142,472 84,452" fill="#ffffff" fill-opacity="0.75"></polygon>
+            <polygon points="320,330 248,290 276,470 336,454" fill="#ffffff" fill-opacity="0.7"></polygon>
+          </g>
+
+          <g class="bouquet-main">
+            <g>
+              <circle cx="208" cy="294" r="76" fill="url(#centerGlow)" opacity="0.34"></circle>
+              <use href="#floret" transform="translate(154 262) scale(1.28)" style="color:#bfe0ff"></use>
+              <use href="#floret" transform="translate(176 244) scale(1.32)" style="color:#cae6ff"></use>
+              <use href="#floret" transform="translate(204 236) scale(1.36)" style="color:#b9d7fb"></use>
+              <use href="#floret" transform="translate(232 246) scale(1.26)" style="color:#c7e4ff"></use>
+              <use href="#floret" transform="translate(250 268) scale(1.22)" style="color:#b6d7fa"></use>
+              <use href="#floret" transform="translate(142 292) scale(1.3)" style="color:#c7e4ff"></use>
+              <use href="#floret" transform="translate(170 288) scale(1.38)" style="color:#b8d8fb"></use>
+              <use href="#floret" transform="translate(198 288) scale(1.46)" style="color:#cae7ff"></use>
+              <use href="#floret" transform="translate(224 292) scale(1.42)" style="color:#b3d4f7"></use>
+              <use href="#floret" transform="translate(250 300) scale(1.32)" style="color:#cce7ff"></use>
+              <use href="#floret" transform="translate(156 322) scale(1.28)" style="color:#bcdcff"></use>
+              <use href="#floret" transform="translate(182 330) scale(1.34)" style="color:#cfe9ff"></use>
+              <use href="#floret" transform="translate(208 334) scale(1.42)" style="color:#b7d7fa"></use>
+              <use href="#floret" transform="translate(236 332) scale(1.28)" style="color:#c4e1ff"></use>
+              <use href="#floret" transform="translate(140 350) scale(1.14)" style="color:#bddbff"></use>
+              <use href="#floret" transform="translate(168 356) scale(1.18)" style="color:#cfe8ff"></use>
+              <use href="#floret" transform="translate(194 360) scale(1.26)" style="color:#bad7fa"></use>
+            </g>
+
+            <g>
+              <use href="#roseBloom" transform="translate(120 244) scale(1.26)" style="color:#f6b5cf"></use>
+              <use href="#roseBloom" transform="translate(286 244) scale(1.18)" style="color:#f3a9c5"></use>
+              <use href="#roseBloom" transform="translate(306 286) scale(1.12)" style="color:#f7c2d8"></use>
+              <use href="#roseBloom" transform="translate(112 308) scale(1.04)" style="color:#f6c8db"></use>
+              <use href="#roseBloom" transform="translate(262 216) scale(0.94)" style="color:#f5b7d0"></use>
+            </g>
+
+            <g>
+              <use href="#ruffle" transform="translate(284 354) scale(1.14)" style="color:#ffe2d3"></use>
+              <use href="#ruffle" transform="translate(220 418) scale(1.24)" style="color:#bf7ca4"></use>
+              <use href="#ruffle" transform="translate(186 376) scale(0.78)" style="color:#d9d2dc"></use>
+              <use href="#pomPom" transform="translate(88 348) scale(1.08)" style="color:#8a6bdf"></use>
+              <use href="#pomPom" transform="translate(276 316) scale(0.94)" style="color:#7d67d7"></use>
+            </g>
+
+            <g>
+              <use href="#floret" transform="translate(168 184) scale(0.74)" style="color:#f1bdd4"></use>
+              <use href="#floret" transform="translate(180 166) scale(0.64)" style="color:#f7d5e6"></use>
+              <use href="#floret" transform="translate(196 152) scale(0.56)" style="color:#efb7d1"></use>
+              <use href="#floret" transform="translate(208 136) scale(0.5)" style="color:#f6cade"></use>
+            </g>
+          </g>
+
+          <g filter="url(#paperShadow)">
+            <polygon points="112,366 310,366 266,538 152,538" fill="url(#paperFront)"></polygon>
+            <polygon points="130,374 240,350 228,524 154,530" fill="#fafffc" fill-opacity="0.9"></polygon>
+            <polygon points="280,374 178,350 188,522 268,532" fill="#fff9fc" fill-opacity="0.88"></polygon>
+          </g>
+
+          <g class="ribbon-group">
+            <path d="M188 444 C160 456 156 482 182 496 C192 490 198 474 195 456 Z" fill="url(#ribbon)"></path>
+            <path d="M232 444 C260 456 264 482 238 496 C228 490 222 474 225 456 Z" fill="url(#ribbon)"></path>
+            <path d="M204 454 C194 478 190 514 198 542 C208 534 214 500 216 474 Z" fill="url(#ribbon)"></path>
+            <path d="M220 456 C228 478 238 512 236 542 C226 534 220 500 216 474 Z" fill="#cf8faf"></path>
+            <rect x="188" y="438" width="48" height="20" rx="10" fill="#e7afc8"></rect>
+          </g>
+        </svg>
+      </div>
+    </section>
+
+    <section class="note">
+      <h2>Inspirada en tu foto</h2>
+      <p>
+        Quise que la pagina se sintiera como ese momento de traer un ramo bonito
+        en las manos: suave, luminoso, delicado y con esa mezcla pastel que hace que
+        todo se vea mas especial.
+      </p>
+
+      <div class="palette" aria-label="Colores del ramo">
+        <span>Hortensia azul</span>
+        <span>Rosas pastel</span>
+        <span>Lila suave</span>
+        <span>Papel blanco</span>
+        <span>Liston rosa</span>
+      </div>
+
+      <div class="signature">Hecha con carino, en version ramo.</div>
+    </section>
+  </main>
+</body>
+</html>
