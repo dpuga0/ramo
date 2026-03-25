@@ -121,6 +121,10 @@
 
     .hero {
       padding: 28px 24px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
     }
 
     .eyebrow {
@@ -135,6 +139,7 @@
       font-size: 0.83rem;
       letter-spacing: 0.08em;
       text-transform: uppercase;
+      margin: 0 auto;
     }
 
     h1,
@@ -149,15 +154,19 @@
       margin-top: 16px;
       font-size: clamp(2.9rem, 10vw, 4.4rem);
       line-height: 0.92;
-      max-width: 7ch;
+      max-width: 10ch;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
     }
 
     .lead {
-      margin: 18px 0 0;
-      max-width: 32ch;
+      margin: 18px auto 0;
+      max-width: 36ch;
       color: var(--muted);
       font-size: 1rem;
       line-height: 1.7;
+      text-align: center;
     }
 
     .showcase {
@@ -205,17 +214,24 @@
     .note {
       margin-top: 20px;
       padding: 24px 22px 22px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
     }
 
     .note h2 {
       font-size: 2rem;
       line-height: 1;
+      text-align: center;
     }
 
     .note p {
-      margin: 12px 0 0;
+      margin: 12px auto 0;
+      max-width: 36ch;
       color: var(--muted);
       line-height: 1.68;
+      text-align: center;
     }
 
     .palette {
@@ -223,6 +239,7 @@
       flex-wrap: wrap;
       gap: 10px;
       margin-top: 18px;
+      justify-content: center;
     }
 
     .palette span {
@@ -233,6 +250,7 @@
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
       color: #6a5565;
       font-size: 0.93rem;
+      text-align: center;
     }
 
     .signature {
@@ -240,6 +258,7 @@
       color: #a38293;
       font-size: 0.9rem;
       letter-spacing: 0.03em;
+      text-align: center;
     }
 
     .bouquet-main {
@@ -515,6 +534,7 @@
       <p>
         No tuve mucho presupuesto y sé que no es mucho, por eso quise que esta pagina se sintiera como ese momento de traer un ramo bonito
         en las manos: suave, luminoso, delicado; para que no perdieras ese momento especial que tanto amas y hacerte sentir lo especial que eres para mi preciosa.
+      </p>
 
       <div class="palette" aria-label="Colores del ramo">
         <span>Hortensia azul</span>
